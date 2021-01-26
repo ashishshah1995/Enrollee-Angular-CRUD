@@ -1,0 +1,80 @@
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <ng-container *ngFor="let column of columns; let i = index" matColumnDef="{{column}}">
+
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+
+    <td mat-cell *matCellDef="let data; let j = index">
+
+      <p *ngIf="j!==k">{{data[column]}}</p>
+
+      <div *ngIf="(j===k && column.toLowerCase()!=='actions')">
+        <div *ngIf="(editableFields && editableFields.indexOf(column) !== -1)">
+
+          <div *ngIf="(dateFields.indexOf(column) === -1)">
+            <mat-form-field>
+
+
+              <input matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column}}" [value]="data[column]"
+                [(ngModel)]="data[column]" autofocus>
+
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="(dateFields && dateFields.indexOf(column) !== -1)">
+
+            <mat-form-field>
+              <input matInput #dateInput [matDatepicker]="picker" placeholder="PICK A DATE" [value]="data[column]"
+                [(ngModel)]="data[column]">
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            </mat-form-field>
+          </div>
+
+        </div>
+        <div *ngIf="(editableFields && editableFields.indexOf(column) === -1)">{{data[column]}}</div>
+      </div>
+      <div *ngIf="(j===k && column.toLowerCase()!=='actions') && (!editableFields)">
+
+        <div *ngIf="(dateFields.indexOf(column) === -1)">
+          <mat-form-field>
+
+            <input matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column}}" [value]="data[column]"
+              [(ngModel)]="data[column]" autofocus>
+
+          </mat-form-field>
+        </div>
+
+
+        <div *ngIf="(dateFields && dateFields.indexOf(column) !== -1)">
+
+          <mat-form-field>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <input matInput [matDatepicker]="picker" placeholder="PICK A DATE" [value]="data[column]"
+              [(ngModel)]="data[column]">
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+
+      <mat-icon id='edit{{j}}' *ngIf="(column && column.toLowerCase()==='actions' && j!==k )" matTooltip="Edit row"
+        class="material-icons" color="primary" (click)="openEdit(data, j)">editors</mat-icon>
+
+      <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j===k )" matTooltip="Update row"
+        class="material-icons" color="primary" (click)="doneEdit(data)">done</mat-icon>
+      <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j===k )" matTooltip="Cancel"
+        class="material-icons" color="primary" (click)="closeEdit(data)">clear</mat-icon>
+    </td>
+
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"
+    [ngStyle]="{'background-color':row.active==true?'green':'red'}">
+  </tr>
+
+</table>
+
+<notifier-container></notifier-container>
